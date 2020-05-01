@@ -16,7 +16,7 @@ class Station
     @trains = []
     @@stations << self
     register_instance
-    register_validates
+    # register_validates
     self.class.validate :name, :format, NAME_FORMAT
     self.class.validate :name, :presence
     validate!

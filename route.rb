@@ -18,7 +18,7 @@ class Route
     @last = last
     @intermediate_stations = []
     register_instance
-    register_validates
+    # register_validates
     self.class.validate :first, :type, Station
     self.class.validate :last, :type, Station
     validate!

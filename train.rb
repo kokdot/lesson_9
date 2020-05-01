@@ -19,7 +19,7 @@ class Train
     @speed = 0
     @station_index = 0
     @@trains[@number] = self
-    register_validates
+    # register_validates
     self.class.validate :number, :presence
     self.class.validate :number, :format, NUMBER_FORMAT
     validate!
