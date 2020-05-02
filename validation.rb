@@ -27,9 +27,9 @@ module Validation
         
     #   end
     # end 
-    def validate(atribut, type_proc, *params)
+    def validate(attr, type, *params)
       self.validates ||= []
-      self.validates << { atribut: atribut, type_proc: type_proc, params: params }
+      self.validates << { attr: attr, type: type, params: params }
     end
   end 
 
@@ -44,34 +44,38 @@ module Validation
     false
   end
 
-  # private
-  def validate_presence?(atribut)
-    atribut != nil && atribut != ''
-  end
-  def validate_type?(atribut, params)
-    atribut.class == params
-  end
-  def validate_format?(atribut, params)
-    params.match(atribut)
-  end
 
   def validate!
     validates = self.class.validates
     p validates
     validates.each do |value|
-      atribut = instance_variable_get("@#{value[:atribut]}".to_sym)
-      if  value[:type_proc] == :presence
+      attr = instance_variable_get("@#{value[:attr]}".to_sym)
+      if  value[:type] == :presence
         # check = atribut != nil && atribut != ''
-        raise "Вы не прошли проверку presence" if !validate_presence?(atribut)
-      elsif value[:type_proc].to_sym == :format
+        validate_presence(attr)
+      elsif value[:type].to_sym == :format
         # atribut = instance_variable_get("@#{value[:atribut]}".to_sym)
         # check =  value[:params].match(atribut)
-        raise "Вы не прошли проверку format" if !validate_format?(atribut, value[:params][0])
-      elsif value[:type_proc].to_sym == :type
+        validate_format(attr, value[:params][0])
+      elsif value[:type].to_sym == :type
         # atribut = instance_variable_get("@#{value[:atribut]}".to_sym)
         # check = atribut.class == value[:params]
-        raise "Вы не прошли проверку type" if !validate_type?(atribut, value[:params][0])
+        validate_type(attr, value[:params][0])
       end
     end
-  end  
+  end 
+   
+  private
+ 
+  def validate_presence(attr)
+    raise "Вы не прошли проверку presence" if !(attr != nil && attr != '')
+  end
+ 
+  def validate_type(attr, params)
+    raise "Вы не прошли проверку format" if !attr.class == params
+  end
+ 
+  def validate_format(attr, params)
+    raise "Вы не прошли проверку type" if !params.match(attr)
+  end
 end 
